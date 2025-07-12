@@ -1,0 +1,38 @@
+# 01-namespace-dashboard.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kubernetes-dashboard
+---
+# 02-helmchart-k8s-dashboard.yaml
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: kubernetes-dashboard
+  namespace: kube-system          # Helm Controller が監視する namespace
+spec:
+  repo: https://kubernetes.github.io/dashboard/   # helm repo add kubernetes-dashboard https://...
+  chart: kubernetes-dashboard                     # kubernetes-dashboard/kubernetes-dashboard
+  version: ""                                     # 空文字で最新、必要なら固定
+  targetNamespace: kubernetes-dashboard           # リソース展開先
+  createNamespace: false                          # 01 で作成済み
+---
+# 03-dashboard-adminuser.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dashboard-admin
+  namespace: kubernetes-dashboard
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: dashboard-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: dashboard-admin
+  namespace: kubernetes-dashboard

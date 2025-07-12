@@ -1,0 +1,47 @@
+services:
+
+  server:
+    hostname: lab-k3s
+    image: "rancher/k3s:v1.30.13-k3s1"
+    runtime: sysbox-runc
+    #privileged: true
+
+    command: >-
+      server 
+      --flannel-backend wireguard-native 
+      --cluster-domain "${CLUSTER_DOMAIN}" 
+      --cluster-cidr "${POD_CIDR}" 
+      --service-cidr "${SVC_CIDR}" 
+      --node-external-ip "${NODE_EXT_IP}" 
+      --disable traefik 
+      --flannel-external-ip true
+
+    tmpfs:
+    - /run
+    - /var/run
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65535
+        hard: 65535
+    restart: always
+    environment:
+    - K3S_TOKEN=${K3S_TOKEN}
+    - K3S_KUBECONFIG_OUTPUT=/output/kubeconfig.yaml
+    - K3S_KUBECONFIG_MODE=666
+    volumes:
+    - ./data:/var/lib/rancher/k3s
+    - ./output:/output
+    - ./manifests:/var/lib/rancher/k3s/server/manifests
+    - ./persistent:/persistent
+    - ./registries.yaml:/etc/rancher/k3s/registries.yaml
+    - /etc/machine-id:/etc/machine-id:ro
+    
+    ports:
+    - 6443:6443       # Kubernetes API Server
+    #- 80:80           # Ingress controller port 80
+    #- 443:443         # Ingress controller port 443
+    - 51820:51820/udp # wiregaurd for flannel
+    - 10250:10250     # Metrics server
+    devices:
+    - /dev/kmsg:/dev/kmsg

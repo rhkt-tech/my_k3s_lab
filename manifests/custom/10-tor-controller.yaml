@@ -1,0 +1,19 @@
+# 01-namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tor-controller
+---
+# 02-helmchart-tor-controller.yaml
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: tor-controller
+  namespace: kube-system         # HelmController が監視している namespace
+spec:
+  repo: https://bugfest.github.io/tor-controller   # helm repo add に相当 :contentReference[oaicite:0]{index=0}
+  chart: tor-controller                             # helm install bugfest/tor-controller に相当 :contentReference[oaicite:1]{index=1}
+  version: ""              # 空にすると最新を取ってきます（必要であれば明示的に vX.Y.Z を指定）
+  targetNamespace: tor-controller  # リソースをデプロイする先の namespace
+  createNamespace: false            # 上で Namespace を別リソースで作成したので false
+  # createNamespace: true を指定すれば Namespace リソースを別途用意せずに自動作成可能
