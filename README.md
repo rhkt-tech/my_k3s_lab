@@ -1,3 +1,5 @@
+# greenwich に移動済み 
+
 # my_k3s_lab
 
 Lab用 kubernetes 環境をサッと作るためのdocker compose
