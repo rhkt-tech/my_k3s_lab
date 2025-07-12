@@ -56,5 +56,5 @@ configs:
 
 ### フォルダについて
 
-/data: コンテナなど
-/persistent: PVを作る場合に使用
+- /data: コンテナなど
+- /persistent: PVを作る場合に使用
