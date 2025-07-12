@@ -11,10 +11,12 @@ Lab用 kubernetes 環境をサッと作るためのdocker compose
 - kubernetes-dashobard
 - tor-controller
 
-## 要件
+起動後 output/kubeconfig.yaml に kubectl のコンフィグが吐かれるのでこれを利用する。 
+
+## 事前要件
 
 - sysbox-ce 導入済み
-- docker compose が動作する
+- docker compose 導入済み
 
 ## 環境固有設定
 
@@ -45,3 +47,14 @@ configs:
 ```
 
 不要であれば空ファイルでよい 
+
+## 仕組み
+
+### kubernetes のカスタマイズ 
+
+/manifests/* に入れてある yaml が自動でデプロイされるので必要なものを展開済み。
+
+### フォルダについて
+
+/data: コンテナなど
+/persistent: PVを作る場合に使用
